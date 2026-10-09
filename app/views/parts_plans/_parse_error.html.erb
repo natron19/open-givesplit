@@ -1,0 +1,11 @@
+<div class="alert alert-warning">
+  <strong>The AI&rsquo;s answer could not be used.</strong>
+  <p class="mb-1"><%= plan.failure_reason %>.</p>
+  <p class="mb-2 small">
+    The answer did not match the expected shape or broke one of the split&rsquo;s rules: 8 to 14 Parts, only
+    the kinds you ticked, at least half not money, and no links, payment apps or bank details. Split again, or
+    edit the template in the admin panel to tighten the instructions.
+  </p>
+  <%= render "needs/split_button", need: need, label: "Retry",
+             button_class: "btn btn-outline-warning btn-sm" %>
+</div>

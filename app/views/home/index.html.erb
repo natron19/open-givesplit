@@ -1,0 +1,77 @@
+<div class="text-center py-5">
+  <h1 class="display-5 fw-bold"><%= ENV.fetch("APP_NAME", "Givesplit Demo") %></h1>
+  <p class="lead text-muted mt-2"><%= ENV.fetch("APP_TAGLINE", "") %></p>
+  <p class="text-muted mx-auto mt-3" style="max-width: 640px;">
+    A vague &ldquo;$4,000 garden&rdquo; is a project nobody can say yes to. Write the need the way you would say
+    it to a neighbour and tick the kinds of giving your community uses. The split turns it into eight to fourteen
+    named Parts, money, materials, tool loans, hours and skills, with at least half of them costing nothing but
+    time, a tool or a skill. Money never moves through this app.
+  </p>
+  <div class="mt-4 d-flex justify-content-center gap-3">
+    <% if signed_in? %>
+      <%= link_to "Go to my needs", needs_path, class: "btn btn-primary btn-lg" %>
+    <% else %>
+      <%= link_to "Try it free", sign_up_path, class: "btn btn-primary btn-lg" %>
+      <%= link_to "Sign in", sign_in_path, class: "btn btn-outline-secondary btn-lg" %>
+    <% end %>
+  </div>
+</div>
+
+<hr class="my-5 opacity-25">
+
+<div class="mx-auto" style="max-width: 960px;">
+  <h2 class="h5 text-muted text-center mb-4">Example &mdash; a fictional neighbourhood association&rsquo;s need</h2>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <p class="text-muted small mb-1">The need</p>
+      <p class="mb-0 fst-italic">
+        &ldquo;We want to turn the empty lot behind the Ashgrove Street laundromat into a community garden with
+        raised beds. Someone priced it at about $4,000 but nobody knows what that covers.&rdquo;
+      </p>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h3 class="h5 mb-1">Ashgrove Street community garden</h3>
+      <p class="numbers-sentence mb-0">$1,500 in money across 4 Parts (3 with an amount), and 8 asks for time, tools, skills and materials.</p>
+    </div>
+  </div>
+
+  <div class="row g-3 mb-3">
+    <% [
+         ["tool_loan", "A rototiller for one weekend", "1 weekend"],
+         ["materials", "Twelve cubic yards of garden soil, delivered", "12 cubic yards"],
+         ["money", "About $900 for cedar lumber for six raised beds", "About $900, a guess to check"],
+         ["hours", "Saturday build, 8 hours, four people", "32 hours"],
+         ["skill", "Someone who has built raised beds to draw a simple plan", "2 hours"],
+         ["hours", "Watering rota, 30 minutes a day for the first month", "15 hours"]
+       ].each do |kind, name, size| %>
+      <div class="col-sm-6 col-lg-4">
+        <div class="card h-100 part-tile <%= kind == 'money' ? 'part-tile-money' : 'part-tile-non-money' %>">
+          <div class="card-body">
+            <span class="badge kind-badge <%= kind == 'money' ? 'kind-badge-money' : 'kind-badge-non-money' %> mb-2"><%= Need::KIND_LABELS[kind] %></span>
+            <h3 class="h6 mb-1"><%= name %></h3>
+            <p class="small mb-0 <%= kind == 'money' ? 'text-warning-emphasis' : 'text-body-secondary' %>"><%= size %></p>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+  <p class="text-center text-muted small mb-0">&hellip;and six more: a second Saturday, a truck for a morning, seedlings, hoses, a tool box, and a share of the water bill.</p>
+
+  <p class="text-center text-muted small mt-4">
+    AI-generated. A first draft of the Parts for you to edit; amounts marked as a guess need checking.
+  </p>
+</div>
+
+<div class="text-center mt-5 pb-4">
+  <% unless signed_in? %>
+    <%= link_to "Split your own need &rarr;".html_safe, sign_up_path, class: "btn btn-primary" %>
+  <% end %>
+  <div class="mt-3 text-muted small">
+    Open source &middot;
+    <a href="https://givesplit.com" class="text-muted">Givesplit</a>
+  </div>
+</div>

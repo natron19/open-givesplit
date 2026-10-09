@@ -1,0 +1,20 @@
+# Per-app guardrail configuration, read by AiGuardConfig.
+# See docs/ai-guardrails.md (Layer 5: AiOutputGuard) and docs/ai-evals.md.
+
+# A community need (a garden, a kitchen repair, a move) is described for the whole community to resource, not as a
+# personal disclosure; personal distress is out of scope here, so the app is not crisis-aware.
+crisis_terms: []
+
+# Output structure rules per AiTemplate name. Templates not listed get the
+# generic output checks only (non-empty, no prompt leak, no profanity, no new PII).
+#   format:        text | json
+#   required_keys: top-level keys the JSON object must contain
+templates:
+  health_ping:
+    format: text
+  # PartsPlansController#parse_plan! reads these three keys. questions_for_owner is optional here (empty or absent
+  # when the need is clear); the parser checks it, the 8-14 part count, the enabled kinds, the half-non-money rule,
+  # and PaymentDetailsCheck.
+  givesplit_parts_v1:
+    format: json
+    required_keys: [project_name, description, parts]

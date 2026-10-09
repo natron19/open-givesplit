@@ -1,0 +1,83 @@
+<% plan = @parts_plan %>
+<div data-controller="download-markdown"
+     data-download-markdown-content-value="<%= plan.completed? ? plan.to_markdown : '' %>"
+     data-download-markdown-filename-value="<%= plan.markdown_filename %>"
+     style="max-width: 1000px;">
+
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+    <div>
+      <p class="text-muted small mb-1">Parts plan</p>
+      <h1 class="h3 mb-1"><%= plan.completed? ? plan.project_name : @need.heading %></h1>
+      <p class="text-muted small mb-0">
+        <%= link_to "← My needs", needs_path, class: "text-muted" %>
+        &nbsp;&middot;&nbsp;
+        <%= link_to "The need", need_path(@need), class: "text-muted" %>
+        &nbsp;&middot;&nbsp;
+        Generated <%= plan.generated_at ? "#{time_ago_in_words(plan.generated_at)} ago" : "at an unknown time" %>
+      </p>
+    </div>
+    <div class="d-flex flex-wrap gap-2 align-items-start">
+      <%= link_to "Edit need", edit_need_path(@need), class: "btn btn-outline-secondary btn-sm" %>
+      <%= render "needs/split_button", need: @need, label: "Split again",
+                 button_class: "btn btn-outline-secondary btn-sm" %>
+      <% if plan.completed? %>
+        <button class="btn btn-outline-primary btn-sm" type="button"
+                data-action="click->download-markdown#download">
+          Download .md
+        </button>
+      <% end %>
+      <button class="btn btn-outline-secondary btn-sm" type="button"
+              data-bs-toggle="collapse" data-bs-target="#raw-response"
+              aria-expanded="false" aria-controls="raw-response">
+        Show raw response
+      </button>
+    </div>
+  </div>
+
+  <p class="text-muted small mb-3">
+    <strong>AI-generated.</strong> A first draft of the Parts for you to edit, not a budget: amounts marked as a
+    guess need checking, and it can be wrong. Money never moves through this app; people arrange it directly.
+  </p>
+
+  <% if plan.stale? %>
+    <div class="alert alert-warning py-2 small">
+      Your need has changed since this split. Split again to see the new version.
+    </div>
+  <% end %>
+
+  <% if plan.failed? %>
+    <%= render "parts_plans/parse_error", need: @need, plan: plan %>
+  <% elsif plan.completed? %>
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="plan-description mb-3"><%= simple_format(plan.description) %></div>
+        <p class="numbers-sentence mb-0"><%= plan.numbers_sentence %></p>
+      </div>
+    </div>
+
+    <h2 class="h5 mb-3"><%= plan.parts.size %> Parts</h2>
+    <div class="row g-3 mb-4">
+      <% plan.parts.each_with_index do |part, i| %>
+        <%= render "parts_plans/part_tile", part: part, number: i + 1, currency: @need.currency %>
+      <% end %>
+    </div>
+
+    <% if plan.questions_for_owner.any? %>
+      <h2 class="h5 mb-2">Questions for you</h2>
+      <ul class="mb-4">
+        <% plan.questions_for_owner.each do |question| %>
+          <li class="mb-1"><%= question %></li>
+        <% end %>
+      </ul>
+    <% end %>
+  <% else %>
+    <p class="text-muted fst-italic">This split is still running&hellip;</p>
+  <% end %>
+
+  <div class="collapse mt-3" id="raw-response">
+    <div class="card card-body">
+      <p class="text-muted small mb-1">Raw response from Gemini:</p>
+      <pre class="small mb-0 text-muted"><%= plan.gemini_raw %></pre>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,71 @@
+<div style="max-width: 720px;">
+  <%= form_with model: need,
+        data: { controller: "form-submit", action: "submit->form-submit#disable" } do |f| %>
+
+    <% if need.errors.any? %>
+      <div class="alert alert-danger">
+        <ul class="mb-0">
+          <% need.errors.full_messages.each do |msg| %>
+            <li><%= msg %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="mb-3">
+      <%= f.label :need_text, "The need, in your own words", class: "form-label" %>
+      <%= f.text_area :need_text, rows: 6, maxlength: Need::NEED_TEXT_RANGE.max,
+            class: "form-control #{'is-invalid' if need.errors[:need_text].any?}",
+            placeholder: "A few sentences. \"We need a garden\" is a start; what it is for and what you already have helps." %>
+      <div class="form-text">Rough is fine. Leave out names, addresses and how to pay: those are arranged privately.</div>
+      <% if need.errors[:need_text].any? %>
+        <div class="invalid-feedback"><%= need.errors[:need_text].first %></div>
+      <% end %>
+    </div>
+
+    <fieldset class="mb-3">
+      <legend class="form-label fs-6 mb-1">Kinds of Part your community uses</legend>
+      <div class="form-text mt-0 mb-2">The split uses only these. At least half the Parts will not be money.</div>
+      <%= f.collection_check_boxes :kinds, Need::KINDS, :itself, ->(k) { Need::KIND_LABELS[k] } do |b| %>
+        <div class="form-check">
+          <%= b.check_box class: "form-check-input #{'is-invalid' if need.errors[:kinds].any?}" %>
+          <%= b.label class: "form-check-label" do %>
+            <%= Need::KIND_LABELS[b.value] %>
+            <span class="text-muted small">&mdash; <%= Need::KIND_HINTS[b.value] %></span>
+          <% end %>
+        </div>
+      <% end %>
+      <% if need.errors[:kinds].any? %>
+        <div class="text-danger small mt-1">Kinds <%= need.errors[:kinds].first %></div>
+      <% end %>
+    </fieldset>
+
+    <div class="row g-3 mb-3">
+      <div class="col-sm-4">
+        <%= f.label :currency, "Currency", class: "form-label" %>
+        <%= f.select :currency, Need::CURRENCIES, {}, class: "form-select" %>
+      </div>
+      <div class="col-sm-8">
+        <%= f.label :rough_budget, "Rough budget", class: "form-label" %>
+        <%= f.text_field :rough_budget, maxlength: 200,
+              class: "form-control #{'is-invalid' if need.errors[:rough_budget].any?}",
+              placeholder: "Optional, e.g. \"Someone said about $4,000\"" %>
+        <% if need.errors[:rough_budget].any? %>
+          <div class="invalid-feedback"><%= need.errors[:rough_budget].first %></div>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <%= f.label :community_context, "About your community", class: "form-label" %>
+      <%= f.text_area :community_context, rows: 2, maxlength: 1000,
+            class: "form-control #{'is-invalid' if need.errors[:community_context].any?}",
+            placeholder: "Optional: what kind of community, roughly how many people, what you have plenty of" %>
+      <% if need.errors[:community_context].any? %>
+        <div class="invalid-feedback"><%= need.errors[:community_context].first %></div>
+      <% end %>
+    </div>
+
+    <%= f.submit "Save need", class: "btn btn-primary", data: { form_submit_target: "button" } %>
+  <% end %>
+</div>

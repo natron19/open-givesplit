@@ -1,0 +1,16 @@
+<% size = part.size_label(currency) %>
+<div class="col-sm-6 col-lg-4">
+  <div class="card h-100 part-tile <%= part.money? ? 'part-tile-money' : 'part-tile-non-money' %>">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-start gap-2 mb-2">
+        <span class="badge kind-badge <%= part.money? ? 'kind-badge-money' : 'kind-badge-non-money' %>"><%= part.kind_label %></span>
+        <span class="text-muted small"><%= number %></span>
+      </div>
+      <h3 class="h6 mb-1"><%= part.name %></h3>
+      <% if size %>
+        <p class="small mb-1 <%= part.price_is_guess ? 'text-warning-emphasis' : 'text-body-secondary' %>"><%= size %></p>
+      <% end %>
+      <p class="text-muted small mb-0"><%= part.why_it_matters %></p>
+    </div>
+  </div>
+</div>

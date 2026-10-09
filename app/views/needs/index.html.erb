@@ -1,0 +1,41 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">My needs</h1>
+  <%= link_to "New need", new_need_path, class: "btn btn-primary btn-sm" %>
+</div>
+
+<% if @needs.empty? %>
+  <div class="text-center py-5">
+    <p class="text-muted mb-3">You haven&rsquo;t described a need yet.</p>
+    <%= link_to "Describe your first need", new_need_path, class: "btn btn-primary" %>
+  </div>
+<% else %>
+  <div class="row g-3">
+    <% @needs.each do |need| %>
+      <% plan = need.latest_parts_plan %>
+      <div class="col-12">
+        <%= link_to need_path(need), class: "text-decoration-none" do %>
+          <div class="card card-hover">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                  <h2 class="h5 card-title mb-1 text-body"><%= need.heading %></h2>
+                  <p class="text-muted small mb-0"><%= need.kind_labels.join(" · ") %></p>
+                </div>
+                <div class="text-end small flex-shrink-0">
+                  <% if plan&.completed? %>
+                    <div class="mb-1"><%= render "needs/plan_badges", plan: plan %></div>
+                    <div class="text-muted">split <%= time_ago_in_words(plan.generated_at) %> ago</div>
+                  <% elsif plan&.failed? %>
+                    <div class="text-muted fst-italic">last split could not be used</div>
+                  <% else %>
+                    <div class="text-muted fst-italic">not split yet</div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>
