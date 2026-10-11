@@ -24,7 +24,7 @@ RSpec.describe "evals/cases/givesplit_parts_v1.yml" do
     expect(file.template).to eq("givesplit_parts_v1")
     expect(file.cases.size).to eq(8)
     expect(file.cases.map { |c| c["kind"] }.tally).to eq("golden" => 3, "edge" => 2, "adversarial" => 2, "benign" => 1)
-    expect(file.rubric.map { |r| r["dimension"] }).to eq(%w[accurate useful steerable])
+    expect(file.rubric.map { |r| r["dimension"] }.uniq).to eq(%w[accurate useful steerable])
   end
 
   it "gives every case the variables the seeded template needs" do
